@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Магазин товарів</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Магазин товарів</h1>
+      <button id="theme-toggle-btn">Dark mode</button>
+    </header>
+
+    <div class="search-section">
+      <input type="text" id="search-input" placeholder="Пошук товарів...">
+    </div>
+
+    <main class="main-content">
+      <section class="products-section">
+        <h2>Товари</h2>
+        <div id="products-list" class="products-grid"></div>
+        <p id="no-products-msg" class="empty-msg" hidden>Товарів не знайдено</p>
+      </section>
+
+      <section class="cart-section">
+        <div class="cart-header">
+          <h2>Кошик</h2>
+          <button id="clear-cart-btn" class="btn-danger">Empty cart</button>
+        </div>
+
+        <ul id="cart-list" class="cart-list"></ul>
+        <p id="empty-cart-msg" class="empty-msg">Кошик порожній</p>
+
+        <div class="cart-summary">
+          <p>Кількість товарів: <span id="cart-count">0</span></p>
+          <p>Загальна сума: $<span id="cart-total">0</span></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
