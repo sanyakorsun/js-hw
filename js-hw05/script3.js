@@ -48,3 +48,36 @@ const bankEmployees = [
 
 const empTable = new EmpTable(bankEmployees);
 console.log(empTable.getHtml());
+
+
+
+class StyledEmpTable extends EmpTable {
+  getStyles() {
+    return `<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: #4CAF50;
+    color: white;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+</style>`;
+  }
+
+  getHtml() {
+    return `${this.getStyles()}\n${super.getHtml()}`;
+  }
+}
+
+const styledEmpTable = new StyledEmpTable(bankEmployees);
+console.log(styledEmpTable.getHtml());
