@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #advice-container {
+      margin-top: 15px;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Пошук порад за словом (XMLHttpRequest)</h2>
+  
+  <div class="search-box">
+    <input type="text" id="keyword-input" placeholder="Введіть слово...">
+    <button onclick="onSearch()">Шукати</button>
+  </div>
+
+  <div id="advice-container"></div>
+
+  <script>
+    function fetchAdviceByKeyword(keyword) {
+      const container = document.getElementById('advice-container');
+      container.innerHTML = 'Завантаження...';
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `https://api.adviceslip.com/advice/search/${encodeURIComponent(keyword)}`, true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+
+          if (response.slips && response.slips.length > 0) {
+            const adviceList = response.slips.map(slip => `<li>${slip.advice}</li>`).join('');
+            container.innerHTML = `<ul>${adviceList}</ul>`;
+          } else if (response.message) {
+            container.innerHTML = `<p>${response.message.text}</p>`;
+          }
+        } else {
+          container.innerHTML = `<p class="error">Помилка завантаження даних (Статус: ${xhr.status})</p>`;
+        }
+      };
+
+      xhr.onerror = function () {
+        container.innerHTML = '<p class="error">Помилка мережевого запиту.</p>';
+      };
+
+      xhr.send();
+    }
+
+    function onSearch() {
+      const input = document.getElementById('keyword-input');
+      if (input.value.trim()) {
+        fetchAdviceByKeyword(input.value.trim());
+      }
+    }
+  </script>
+</body>
+</html>
