@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    ul {
+      list-style-type: square;
+      line-height: 1.6;
+    }
+
+    li {
+      text-transform: capitalize;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Список порід собак (Dog API + XMLHttpRequest)</h2>
+  <ul id="breed-list">Завантаження порід...</ul>
+
+  <script>
+    function fetchDogBreeds() {
+      const breedListElement = document.getElementById('breed-list');
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', 'https://dog.ceo/api/breeds/list/all', true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          const breedsObj = response.message;
+
+          breedListElement.innerHTML = '';
+          for (const breed in breedsObj) {
+            const li = document.createElement('li');
+            li.textContent = breed;
+            breedListElement.appendChild(li);
+          }
+        } else {
+          console.error(`Помилка під час отримання порід: Статус ${xhr.status}`);
+        }
+      };
+
+      xhr.onerror = function () {
+        console.error('Мережева помилка під час виконання запиту fetchDogBreeds.');
+      };
+
+      xhr.send();
+    }
+
+    fetchDogBreeds();
+  </script>
+
+</body>
+</html>
