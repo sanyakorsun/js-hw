@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .flag {
+      border: 1px solid #eee;
+      margin-top: 10px;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Пошук країни (REST Countries API)</h2>
+
+  <form id="country-form" onsubmit="handleFormSubmit(event)">
+    <input type="text" id="country-name-input" placeholder="Введіть назву країни..." required />
+    <button type="submit" id="submit-btn">Отримати дані</button>
+  </form>
+
+  <div id="country-info"></div>
+
+  <script>
+    function fetchCountryByName(countryName) {
+      const container = document.getElementById('country-info');
+      container.innerHTML = '';
+
+      return fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(countryName)}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Країна не знайдена');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const country = data[0];
+          const name = country.name.official || country.name.common;
+          const capital = country.capital ? country.capital.join(', ') : 'Немає';
+          const region = country.region;
+          const population = country.population.toLocaleString();
+          const flagUrl = country.flags.png;
+
+          container.innerHTML = `
+            <div class="card">
+              <h3>${name}</h3>
+              <img src="${flagUrl}" alt="Прапор ${name}" class="flag" width="140" />
+              <p><strong>Столиця:</strong> ${capital}</p>
+              <p><strong>Регіон:</strong> ${region}</p>
+              <p><strong>Населення:</strong> ${population}</p>
+            </div>
+          `;
+          return true;
+        })
+        .catch(error => {
+          container.innerHTML = `<p class="error">${error.message}</p>`;
+          return false;
+        });
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const form = document.getElementById('country-form');
+      const input = document.getElementById('country-name-input');
+      const button = document.getElementById('submit-btn');
+      const originalButtonText = button.textContent;
+
+      button.disabled = true;
+      button.textContent = 'Loading...';
+
+      fetchCountryByName(input.value.trim())
+        .then(isSuccess => {
+          if (isSuccess) {
+            form.reset();
+          }
+        })
+        .finally(() => {
+          button.disabled = false;
+          button.textContent = originalButtonText;
+        });
+    }
+  </script>
+
+</body>
+</html>
